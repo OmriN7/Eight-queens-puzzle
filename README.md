@@ -1,2 +1,0 @@
-Eight-queens-puzzle
-===================
