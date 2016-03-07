@@ -1,24 +1,6 @@
-#include <iostream>
-
-#include <stdio.h> /* scanf*/
-#include <cstring> /* memset */
-#include <conio.h> /* getch */
-#include <stdlib.h> /* malloc, free, rand */
-
-using namespace std;
-
-#define ROW 0 //x of the board
-#define COLUMN 1 //y of the board
-
-#define HORIZONTAL 0
-#define VERTICAL 1
-#define DIAGONALTLBR 2
-#define DIAGONALTRBL 3
-
-
 
 //Function Commenting Format
-/* Function Notes
+/*/////////////////////////////////////////////////////////////////////
 * Name:
 *
 * Inputs:
@@ -35,8 +17,30 @@ using namespace std;
 */
 
 
+/// HEADER FILES
+///////////////////////////////////////////////////////////////////////
+#include <iostream>
+#include <stdio.h> /* scanf*/
+#include <cstring> /* memset */
+#include <conio.h> /* getch */
+#include <stdlib.h> /* malloc, free, rand */
 
-/* Function Notes
+///DEFINES
+//////////////////////////////////////////////////////////////////////
+using namespace std;
+
+#define ROW 0 //x of the board
+#define COLUMN 1 //y of the board
+
+#define HORIZONTAL 0
+#define VERTICAL 1
+#define DIAGONALTLBR 2
+#define DIAGONALTRBL 3
+
+
+
+///Function Notes
+/*/////////////////////////////////////////////////////////////////////
 * Name: bool RemoveQueen(int queensCoordinate[][2],  int* possibleColumn, int* possibleRow, int* queensPlacedDown)
 *
 * Inputs:
@@ -59,26 +63,32 @@ using namespace std;
 *       Moves of the coordinates of the queen the program is about to remove to the
 *       possibleColumn and possibleRow variables and then removes the queen from the array.
 */
-bool RemoveQueen(int queensCoordinate[][2],  int* possibleColumn, int* possibleRow, int* queensPlacedDown)
+bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow, int* queensPlacedDown)
 {
 
-    (*possibleRow) = queensCoordinate[((*queensPlacedDown)-1)][ROW];
-    (*possibleColumn) = queensCoordinate[((*queensPlacedDown)-1)][COLUMN];
+    (*possibleRow) = ((*queensPlacedDown)-1);
 
-    if((queensCoordinate[((*queensPlacedDown)-1)][ROW] == 0) && (queensCoordinate[((*queensPlacedDown)-1)][COLUMN] == 7))
+    (*possibleColumn) = queensCoordinate[((*queensPlacedDown)-1)];
+
+    if((*possibleRow) == 0 && (*possibleColumn) == 7)
     {
         return true;
     }
 
-    queensCoordinate[((*queensPlacedDown)-1)][ROW] = -1;
-    queensCoordinate[((*queensPlacedDown)-1)][COLUMN] = -1;
+    queensCoordinate[((*queensPlacedDown)-1)] = -1;
 
     (*queensPlacedDown)--;
 
     return false;
 }
 
-/* Function Notes
+
+
+
+
+
+///Function Notes
+/*/////////////////////////////////////////////////////////////////////
 * Name: void PrintQueens(int queensCoordinate[][2], int boardSize)
 *
 * Inputs:
@@ -99,15 +109,22 @@ bool RemoveQueen(int queensCoordinate[][2],  int* possibleColumn, int* possibleR
 *       Moves of the coordinates of the queen the program is about to remove to the
 *       possibleColumn and possibleRow variables and then removes the queen from the array.
 */
-void PrintQueens(int queensCoordinate[][2], int boardSize)
+void PrintQueens(int queensCoordinate[], int boardSize, int queensPlacedDown)
 {
     for(int row = 0; row < boardSize; row++)
     {
         for(int column = 0; column < boardSize; column++)
         {
-            if(queensCoordinate[row][COLUMN] == column)
+            if(row < queensPlacedDown)
             {
-                cout << "1 ";
+                if(queensCoordinate[row] == column)
+                {
+                    cout << "1 ";
+                }
+                else
+                {
+                    cout << "0 ";
+                }
             }
             else
             {
@@ -120,7 +137,12 @@ void PrintQueens(int queensCoordinate[][2], int boardSize)
 }
 
 
-/* Function Notes
+
+
+
+
+///Function Notes
+/*/////////////////////////////////////////////////////////////////////
 * Name: void PushSequence( int boardSize, int* possibleColumn, int* possibleRow)
 *
 * Inputs:
@@ -168,7 +190,10 @@ void PushSequence(int boardSize, int* possibleColumn, int* possibleRow)
 
 
 
-/* Function Notes
+
+
+///Function Notes
+/*/////////////////////////////////////////////////////////////////////
 * Name: int EightQueensPuzzle(int boardSize)
 *
 * Inputs:
@@ -199,7 +224,7 @@ int EightQueensPuzzle(int boardSize)
         //Array stack that keeps track of the coordinates of the queens
 
         ///OLD
-        int queensCoordinate[8][2]; ///Note that the array for the queens is static but in the future look into changing this into malloc
+        int queensCoordinate[8]; ///Note that the array for the queens is static but in the future look into changing this into malloc
 
         ///First attempt
         //int* queensCoordinate = (int*) malloc (sizeof(int)*2*boardSize);
@@ -217,8 +242,11 @@ int EightQueensPuzzle(int boardSize)
         //This variable is also the return value of this function (if successful).
         int successsfulPossibilities = 0;
 
-        //Keeps track of the amount of queens that were placed down.
+        //Keeps track of the amount of queePrintQueensns that were placed down.
         int queensPlacedDown = 0;
+
+
+
 
 
 
@@ -232,10 +260,11 @@ int EightQueensPuzzle(int boardSize)
 
 
     //Initialize the values for the array that keeps track of all the coordinates of the queens.
-    memset (queensCoordinate,0,(sizeof(queensCoordinate)));
+    memset (queensCoordinate,-1,(sizeof(queensCoordinate)));
+    //memset (queensCoordinate,0,sizeof(queensCoordinate [0][0])*boardSize*2);
 
     //Place the first queen on the corner of the board.
-    queensPlacedDown++;
+    //queensPlacedDown++;
 
 
 
@@ -245,32 +274,29 @@ int EightQueensPuzzle(int boardSize)
         testType = 0;
 
         //Keep checking the potential row and column and see if they work
-        while(testType <= 3)
+        while(testType <= 3 && (possibleRow <= queensPlacedDown))
         {
             switch(testType)
             {
                 ///Check all queens horizontally
                 case HORIZONTAL:
                     testType++;
-                    for(int QueensIndexScanner = 0; QueensIndexScanner < boardSize; QueensIndexScanner++)
+                    if(!(possibleRow == queensPlacedDown))
                     {
-                        if(queensCoordinate[QueensIndexScanner][ROW] == possibleRow)
-                        {
-                            //Current location failed horizontally
-                            possibleColumn = 7;
-                            PushSequence(boardSize, &possibleColumn, &possibleRow);
-                            testType = 0;
-                            break;
-                        }
+                        //Current location failed horizontally
+                        possibleColumn = 7;
+                        PushSequence(boardSize, &possibleColumn, &possibleRow);
+                        testType = 0;
+                        break;
                     }
                     break;
 
                 ///Check all queens vertically
                 case VERTICAL:
                     testType++;
-                    for(int QueensIndexScanner = 0; QueensIndexScanner < boardSize; QueensIndexScanner++)
+                    for(int QueensIndexScanner = 0; QueensIndexScanner < queensPlacedDown; QueensIndexScanner++)
                     {
-                        if(queensCoordinate[QueensIndexScanner][COLUMN] == possibleColumn)
+                        if(queensCoordinate[QueensIndexScanner] == possibleColumn)
                         {
                             //Current location failed vertically
                             PushSequence(boardSize, &possibleColumn, &possibleRow);
@@ -285,18 +311,7 @@ int EightQueensPuzzle(int boardSize)
                     testType++;
                     for(int QueensIndexScanner = 0; QueensIndexScanner < queensPlacedDown; QueensIndexScanner++)
                     {
-                        if((queensCoordinate[QueensIndexScanner][COLUMN] == possibleColumn-(queensPlacedDown-QueensIndexScanner)) && (queensCoordinate[QueensIndexScanner][ROW] == possibleRow-(queensPlacedDown-QueensIndexScanner)))
-                        {
-                            //Current location failed vertically
-                            PushSequence(boardSize, &possibleColumn, &possibleRow);
-                            testType = 0;
-                            break;
-                        }
-                    }
-
-                    for(int QueensIndexScanner = queensPlacedDown+1; QueensIndexScanner < boardSize; QueensIndexScanner++)
-                    {
-                        if((queensCoordinate[QueensIndexScanner][COLUMN] == possibleColumn-(queensPlacedDown-QueensIndexScanner)) && (queensCoordinate[QueensIndexScanner][ROW] == possibleRow-(queensPlacedDown-QueensIndexScanner)))
+                        if((queensCoordinate[QueensIndexScanner] == possibleColumn-(queensPlacedDown-QueensIndexScanner)))
                         {
                             //Current location failed vertically
                             PushSequence(boardSize, &possibleColumn, &possibleRow);
@@ -311,18 +326,7 @@ int EightQueensPuzzle(int boardSize)
                     testType++;
                     for(int QueensIndexScanner = 0; QueensIndexScanner < queensPlacedDown; QueensIndexScanner++)
                     {
-                        if((queensCoordinate[QueensIndexScanner][COLUMN] == possibleColumn+(queensPlacedDown-QueensIndexScanner)) && (queensCoordinate[QueensIndexScanner][ROW] == possibleRow-(queensPlacedDown-QueensIndexScanner)))
-                        {
-                            //Current location failed vertically
-                            PushSequence(boardSize, &possibleColumn, &possibleRow);
-                            testType = 0;
-                            break;
-                        }
-                    }
-
-                    for(int QueensIndexScanner = queensPlacedDown+1; QueensIndexScanner < boardSize; QueensIndexScanner++)
-                    {
-                        if((queensCoordinate[QueensIndexScanner][COLUMN] == possibleColumn+(queensPlacedDown-QueensIndexScanner)) && (queensCoordinate[QueensIndexScanner][ROW] == possibleRow-(queensPlacedDown-QueensIndexScanner)))
+                        if(queensCoordinate[QueensIndexScanner] == possibleColumn+(queensPlacedDown-QueensIndexScanner))
                         {
                             //Current location failed vertically
                             PushSequence(boardSize, &possibleColumn, &possibleRow);
@@ -338,9 +342,9 @@ int EightQueensPuzzle(int boardSize)
         if(queensPlacedDown == possibleRow)
         {
             //Add queen
-            queensCoordinate[queensPlacedDown][ROW] = possibleRow;
-            queensCoordinate[queensPlacedDown][COLUMN] = possibleColumn;
+            queensCoordinate[queensPlacedDown] = possibleColumn;
             queensPlacedDown++;
+
 
             //Register Queen and the remove the latest queen placed down and keep on searching
             if(queensPlacedDown == boardSize)
@@ -349,7 +353,7 @@ int EightQueensPuzzle(int boardSize)
                 successsfulPossibilities++;
 
                 cout << "Success! A possibility was found:\n";
-                PrintQueens(queensCoordinate, boardSize);
+                PrintQueens(queensCoordinate, boardSize, queensPlacedDown);
                 cout << "\n";
 
                 //Remove Queen
@@ -369,8 +373,9 @@ int EightQueensPuzzle(int boardSize)
 }
 
 
-/* Function Notes
-* Name: void main()
+///Function Notes
+/*/////////////////////////////////////////////////////////////////////
+* Name: int main()
 *
 * Inputs:
 *       // Parameters //
@@ -394,9 +399,10 @@ int EightQueensPuzzle(int boardSize)
 */
 int main()
 {
+
+    int boardSize = 8;
     /* WORK IN PROGRESS
         //Asks the user for a board size and saves that variable inside int boardSize.
-        int boardSize = 8;
         cout << "Please give me a size for the board: ";
         scanf("%d", &boardSize);
     */
