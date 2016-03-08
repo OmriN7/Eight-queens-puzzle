@@ -37,6 +37,9 @@ using namespace std;
 #define DIAGONALTLBR 2
 #define DIAGONALTRBL 3
 
+//Debug stuff
+#define DEBUG 1
+
 
 
 ///Function Notes
@@ -81,7 +84,6 @@ bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow,
 
     return false;
 }
-
 
 
 
@@ -246,10 +248,6 @@ int EightQueensPuzzle(int boardSize)
         int queensPlacedDown = 0;
 
 
-
-
-
-
         //Used for checking if specific tiles can be used for placing the next queen or not.
         int testType;
         int possibleRow = 0;
@@ -257,16 +255,6 @@ int EightQueensPuzzle(int boardSize)
 
         //This will be set to true whenever
         bool everythingScanned;
-
-
-    //Initialize the values for the array that keeps track of all the coordinates of the queens.
-    memset (queensCoordinate,-1,(sizeof(queensCoordinate)));
-    //memset (queensCoordinate,0,sizeof(queensCoordinate [0][0])*boardSize*2);
-
-    //Place the first queen on the corner of the board.
-    //queensPlacedDown++;
-
-
 
     //Runs every single possibility until everything possible permutation has been simulated.
     while(!everythingScanned)
