@@ -17,13 +17,14 @@
 */
 
 
-/// HEADER FILES
+///HEADER FILES
 ///////////////////////////////////////////////////////////////////////
 #include <iostream>
-#include <stdio.h> /* scanf*/
-#include <cstring> /* memset */
-#include <conio.h> /* getch */
-#include <stdlib.h> /* malloc, free, rand */
+#include <stdio.h> // scanf
+#include <conio.h> // getch
+#include <stdlib.h> // malloc, free
+#include <chrono> // high_resolution_clock
+
 
 ///DEFINES
 //////////////////////////////////////////////////////////////////////
@@ -32,13 +33,80 @@ using namespace std;
 #define ROW 0 //x of the board
 #define COLUMN 1 //y of the board
 
-#define HORIZONTAL 0
-#define VERTICAL 1
-#define DIAGONALTLBR 2
-#define DIAGONALTRBL 3
+#define VERTICAL 0
+#define DIAGONALTLBR 1
+#define DIAGONALTRBL 2
 
-//Debug stuff
-#define DEBUG 1
+//#define DEBUG 1
+
+
+
+///FUNCTION PROTOTYPES
+///////////////////////////////////////////////////////////////////////
+static bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow, int* queensPlacedDown);
+static void PrintQueens(int queensCoordinate[], int boardSize, int queensPlacedDown);
+static void PushSequence(int boardSize, int* possibleColumn, int* possibleRow);
+static int EightQueensPuzzle(int boardSize);
+
+
+
+///Function Notes
+/*/////////////////////////////////////////////////////////////////////
+* Name: int main()
+*
+* Inputs:
+*       // Parameters //
+*       N/A
+*
+*       // Variables //
+*       int boardSize       The size of the board for the puzzle.
+*
+*
+* Outputs:
+*       // Return Value //
+*       N/A
+*
+*
+* Description:
+*       main function. Prompts the user for the board size, calls
+*       EightQueensPuzzle function and shows the amount of permutations
+*       that are possible with the given board size and then asks the user
+*       to press any button to exit the program.
+*
+*/
+int main()
+{
+
+    int boardSize = 8;
+    /* WORK IN PROGRESS
+        //Asks the user for a board size and saves that variable inside int boardSize.
+        cout << "Please give me a size for the board: ";
+        scanf("%d", &boardSize);
+    */
+
+    #ifdef DEBUG
+        cout << "The program is running in debug mode.\n";
+    #endif
+	auto start_time = chrono::high_resolution_clock::now();
+
+
+    //Calculates and shows the user the amount of permutations that are possible with the given board size.
+    cout << "You can have " << EightQueensPuzzle(boardSize) << " possible permutations for a square board that's " << boardSize << " tiles large.\n\n";
+
+
+
+	auto end_time = chrono::high_resolution_clock::now();
+	cout << "It took the program " << chrono::duration_cast<chrono::microseconds>(end_time - start_time).count() << " microseconds to run.\n\n";
+
+
+    //Asks the user to press any key to exit the program.
+    cout << "\nPress any key to exit.";
+    _getch();
+
+    //End of program.
+    return 0;
+}
+
 
 
 
@@ -66,7 +134,7 @@ using namespace std;
 *       Moves of the coordinates of the queen the program is about to remove to the
 *       possibleColumn and possibleRow variables and then removes the queen from the array.
 */
-bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow, int* queensPlacedDown)
+static bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow, int* queensPlacedDown)
 {
 
     (*possibleRow) = ((*queensPlacedDown)-1);
@@ -78,15 +146,10 @@ bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow,
         return true;
     }
 
-    queensCoordinate[((*queensPlacedDown)-1)] = -1;
-
     (*queensPlacedDown)--;
 
     return false;
 }
-
-
-
 
 
 ///Function Notes
@@ -111,7 +174,7 @@ bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow,
 *       Moves of the coordinates of the queen the program is about to remove to the
 *       possibleColumn and possibleRow variables and then removes the queen from the array.
 */
-void PrintQueens(int queensCoordinate[], int boardSize, int queensPlacedDown)
+static void PrintQueens(int queensCoordinate[], int boardSize, int queensPlacedDown)
 {
     for(int row = 0; row < boardSize; row++)
     {
@@ -139,10 +202,6 @@ void PrintQueens(int queensCoordinate[], int boardSize, int queensPlacedDown)
 }
 
 
-
-
-
-
 ///Function Notes
 /*/////////////////////////////////////////////////////////////////////
 * Name: void PushSequence( int boardSize, int* possibleColumn, int* possibleRow)
@@ -166,7 +225,7 @@ void PrintQueens(int queensCoordinate[], int boardSize, int queensPlacedDown)
 *       Pushes the the possibleColumn and possibleRow a single tile forward on the board,
 *       ensuring the value doesn't equate to a position that's off of the board.
 */
-void PushSequence(int boardSize, int* possibleColumn, int* possibleRow)
+static void PushSequence(int boardSize, int* possibleColumn, int* possibleRow)
 {
     (*possibleColumn)++;
     if((*possibleColumn) == boardSize)
@@ -188,9 +247,6 @@ void PushSequence(int boardSize, int* possibleColumn, int* possibleRow)
         */
     }
 }
-
-
-
 
 
 
@@ -217,7 +273,7 @@ void PushSequence(int boardSize, int* possibleColumn, int* possibleRow)
 *       the amount of queens that can be placed on a board of that given size.
 *
 */
-int EightQueensPuzzle(int boardSize)
+static int EightQueensPuzzle(int boardSize)
 {
 
     ///Make some sort of checker that checks that boardSize is an integer.
@@ -225,20 +281,12 @@ int EightQueensPuzzle(int boardSize)
     ///Initializing the variables needed for this function
         //Array stack that keeps track of the coordinates of the queens
 
-        ///OLD
+
         int queensCoordinate[8]; ///Note that the array for the queens is static but in the future look into changing this into malloc
 
-        ///First attempt
+        ///Code for later
         //int* queensCoordinate = (int*) malloc (sizeof(int)*2*boardSize);
 
-
-        /*
-        int **queensCoordinate = (int **)malloc(boardSize * sizeof(int *));
-        for (int i=0; i<r; i++)
-        {
-          queensCoordinate[i] = (int *)malloc(2 * sizeof(int));
-        }
-        */
 
         //Number of successful possibilities of the queens being placed on the board.
         //This variable is also the return value of this function (if successful).
@@ -254,7 +302,7 @@ int EightQueensPuzzle(int boardSize)
         int possibleColumn = 0;
 
         //This will be set to true whenever
-        bool everythingScanned;
+        bool everythingScanned = false;
 
     //Runs every single possibility until everything possible permutation has been simulated.
     while(!everythingScanned)
@@ -262,23 +310,10 @@ int EightQueensPuzzle(int boardSize)
         testType = 0;
 
         //Keep checking the potential row and column and see if they work
-        while(testType <= 3 && (possibleRow <= queensPlacedDown))
+        while(testType <= 2 && (possibleRow <= queensPlacedDown))
         {
             switch(testType)
             {
-                ///Check all queens horizontally
-                case HORIZONTAL:
-                    testType++;
-                    if(!(possibleRow == queensPlacedDown))
-                    {
-                        //Current location failed horizontally
-                        possibleColumn = 7;
-                        PushSequence(boardSize, &possibleColumn, &possibleRow);
-                        testType = 0;
-                        break;
-                    }
-                    break;
-
                 ///Check all queens vertically
                 case VERTICAL:
                     testType++;
@@ -333,6 +368,8 @@ int EightQueensPuzzle(int boardSize)
             queensCoordinate[queensPlacedDown] = possibleColumn;
             queensPlacedDown++;
 
+            possibleColumn = 7;
+            PushSequence(boardSize, &possibleColumn, &possibleRow);
 
             //Register Queen and the remove the latest queen placed down and keep on searching
             if(queensPlacedDown == boardSize)
@@ -340,71 +377,27 @@ int EightQueensPuzzle(int boardSize)
                 //Success! :D
                 successsfulPossibilities++;
 
-                cout << "Success! A possibility was found:\n";
-                PrintQueens(queensCoordinate, boardSize, queensPlacedDown);
-                cout << "\n";
+
+                #ifdef DEBUG
+                    cout << "Success! A possibility was found:\n";
+                    PrintQueens(queensCoordinate, boardSize, queensPlacedDown);
+                    cout << "\n";
+                #endif
 
                 //Remove Queen
                 everythingScanned = RemoveQueen(queensCoordinate, &possibleColumn, &possibleRow, &queensPlacedDown);
+                PushSequence(boardSize, &possibleColumn, &possibleRow);
             }
         }
         //If it isn't then scrap the latest queen that was inserted to the array.
         else
         {
             everythingScanned = RemoveQueen(queensCoordinate, &possibleColumn, &possibleRow, &queensPlacedDown);
+            PushSequence(boardSize, &possibleColumn, &possibleRow);
         }
-
-        PushSequence(boardSize, &possibleColumn, &possibleRow);
     }
 
     return successsfulPossibilities;
 }
-
-
-///Function Notes
-/*/////////////////////////////////////////////////////////////////////
-* Name: int main()
-*
-* Inputs:
-*       // Parameters //
-*       N/A
-*
-*       // Variables //
-*       int boardSize       The size of the board for the puzzle.
-*
-*
-* Outputs:
-*       // Return Value //
-*       N/A
-*
-*
-* Description:
-*       main function. Prompts the user for the board size, calls
-*       EightQueensPuzzle function and shows the amount of permutations
-*       that are possible with the given board size and then asks the user
-*       to press any button to exit the program.
-*
-*/
-int main()
-{
-
-    int boardSize = 8;
-    /* WORK IN PROGRESS
-        //Asks the user for a board size and saves that variable inside int boardSize.
-        cout << "Please give me a size for the board: ";
-        scanf("%d", &boardSize);
-    */
-
-    //Calculates and shows the user the amount of permutations that are possible with the given board size.
-    cout << "You can have " << EightQueensPuzzle(boardSize) << " possible permutations for a square board that's " << boardSize << " tiles large.\n";
-
-    //Asks the user to press any key to exit the program.
-    cout << "\nPress the enter key to exit.";
-    getch();
-
-    //End of program.
-    return 0;
-}
-
 
 
