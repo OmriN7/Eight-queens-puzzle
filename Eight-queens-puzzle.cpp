@@ -41,6 +41,15 @@ using namespace std;
 
 
 
+///MACROS
+//////////////////////////////////////////////////////////////////////
+#define TestVertical(y1, y2)  ((y1) == (y2) ? (true) : (false))
+#define TestDiagonalLeft(x1, y1, x2, y2)  ((y1-x1) == (y2-x2) ? (true) : (false))
+#define TestDiagonalRight(x1, y1, x2, y2)  ((y1+x1) == (y2+x2) ? (true) : (false))
+
+
+
+
 ///FUNCTION PROTOTYPES
 ///////////////////////////////////////////////////////////////////////
 static bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow, int* queensPlacedDown);
@@ -65,7 +74,7 @@ static int EightQueensPuzzle(int boardSize);
 * Outputs:
 *       // Return Value //
 *       N/A
-*
+  *
 *
 * Description:
 *       main function. Prompts the user for the board size, calls
@@ -307,58 +316,22 @@ static int EightQueensPuzzle(int boardSize)
     //Runs every single possibility until everything possible permutation has been simulated.
     while(!everythingScanned)
     {
-        testType = 0;
-
         //Keep checking the potential row and column and see if they work
-        while(testType <= 2 && (possibleRow <= queensPlacedDown))
+        while(possibleRow <= queensPlacedDown)
         {
-            switch(testType)
+
+            for(int QueensIndexScanner = 0; QueensIndexScanner < queensPlacedDown; QueensIndexScanner++)
             {
-                ///Check all queens vertically
-                case VERTICAL:
-                    testType++;
-                    for(int QueensIndexScanner = 0; QueensIndexScanner < queensPlacedDown; QueensIndexScanner++)
-                    {
-                        if(queensCoordinate[QueensIndexScanner] == possibleColumn)
-                        {
-                            //Current location failed vertically
-                            PushSequence(boardSize, &possibleColumn, &possibleRow);
-                            testType = 0;
-                            break;
-                        }
-                    }
-                    break;
-
-                ///Check all queens diagonally top left to bottom right
-                case DIAGONALTLBR:
-                    testType++;
-                    for(int QueensIndexScanner = 0; QueensIndexScanner < queensPlacedDown; QueensIndexScanner++)
-                    {
-                        if((queensCoordinate[QueensIndexScanner] == possibleColumn-(queensPlacedDown-QueensIndexScanner)))
-                        {
-                            //Current location failed vertically
-                            PushSequence(boardSize, &possibleColumn, &possibleRow);
-                            testType = 0;
-                            break;
-                        }
-                    }
-                    break;
-
-                ///Check all queens diagonally top right to bottom left
-                case DIAGONALTRBL:
-                    testType++;
-                    for(int QueensIndexScanner = 0; QueensIndexScanner < queensPlacedDown; QueensIndexScanner++)
-                    {
-                        if(queensCoordinate[QueensIndexScanner] == possibleColumn+(queensPlacedDown-QueensIndexScanner))
-                        {
-                            //Current location failed vertically
-                            PushSequence(boardSize, &possibleColumn, &possibleRow);
-                            testType = 0;
-                            break;
-                        }
-                    }
-                    break;
+                //Check the queen vertically, diagonally to the left and diagonally to the right
+                if((TestVertical(queensCoordinate[QueensIndexScanner],possibleColumn)) || (TestDiagonalLeft(queensCoordinate[QueensIndexScanner],QueensIndexScanner,possibleColumn,possibleRow)) || (TestDiagonalRight(queensCoordinate[QueensIndexScanner],QueensIndexScanner,possibleColumn,possibleRow)))
+                {
+                    //Current location is invalid
+                    PushSequence(boardSize, &possibleColumn, &possibleRow);
+                    QueensIndexScanner = -1;
+                    continue;
+                }
             }
+            break;
         }
 
         //If the row is equal to the number of queens placed. This is a rule that has to be true for a permutation to work.
@@ -378,11 +351,11 @@ static int EightQueensPuzzle(int boardSize)
                 successsfulPossibilities++;
 
 
-                #ifdef DEBUG
+#ifdef DEBUG
                     cout << "Success! A possibility was found:\n";
                     PrintQueens(queensCoordinate, boardSize, queensPlacedDown);
                     cout << "\n";
-                #endif
+#endif
 
                 //Remove Queen
                 everythingScanned = RemoveQueen(queensCoordinate, &possibleColumn, &possibleRow, &queensPlacedDown);
