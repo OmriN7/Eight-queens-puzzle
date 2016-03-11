@@ -43,11 +43,18 @@ using namespace std;
 
 ///MACROS
 //////////////////////////////////////////////////////////////////////
+/*
 #define TestVertical(y1, y2)  ((y1) == (y2) ? (true) : (false))
 #define TestDiagonalLeft(x1, y1, x2, y2)  ((y1-x1) == (y2-x2) ? (true) : (false))
 #define TestDiagonalRight(x1, y1, x2, y2)  ((y1+x1) == (y2+x2) ? (true) : (false))
+*/
+
+#define TestVertical(y1, y2)  ((y1) == (y2))
+#define TestDiagonalLeft(x1, y1, x2, y2)  (((y1)-(x1)) == ((y2)-(x2)))
+#define TestDiagonalRight(x1, y1, x2, y2)  (((y1)+(x1)) == ((y2)+(x2)))
 
 
+#define TestQueen(x1, y1, x2, y2) ((TestVertical(y1, y2)) || (TestDiagonalLeft(x1, y1, x2, y2)) || (TestDiagonalRight(x1, y1, x2, y2)))
 
 
 ///FUNCTION PROTOTYPES
@@ -69,7 +76,7 @@ static int EightQueensPuzzle(int boardSize);
 *
 *       // Variables //
 *       int boardSize       The size of the board for the puzzle.
-*
+*https://github.com/OmriN7/Eight-queens-puzzle/blob/master/Eight-queens-puzzle.cpp
 *
 * Outputs:
 *       // Return Value //
@@ -96,6 +103,7 @@ int main()
     #ifdef DEBUG
         cout << "The program is running in debug mode.\n";
     #endif
+
 	auto start_time = chrono::high_resolution_clock::now();
 
 
@@ -126,7 +134,7 @@ int main()
 * Inputs:
 *       // Parameters //
 *       int queensCoordinate[][2]       The list of all the queens.
-*       int* possibleColumn             Pointer to possibleColumn in the original 'EightQueensPuzzle' function
+*       int* possibleColumn             Pointer to possibleColumn in the originahttps://github.com/OmriN7/Eight-queens-puzzle/blob/master/Eight-queens-puzzle.cppl 'EightQueensPuzzle' function
 *       int* possibleRow                Pointer to possibleRow in the original 'EightQueensPuzzle' function
 *       int queensPlacedDown            The amount of queens that were placed down.
 *
@@ -138,7 +146,7 @@ int main()
 *       // Return Value //
 *       If the last piece of the puzzle has been removed and the program should end.
 *
-*
+*https://github.com/OmriN7/Eight-queens-puzzle/blob/master/Eight-queens-puzzle.cpp
 * Description:
 *       Moves of the coordinates of the queen the program is about to remove to the
 *       possibleColumn and possibleRow variables and then removes the queen from the array.
@@ -323,7 +331,13 @@ static int EightQueensPuzzle(int boardSize)
             for(int QueensIndexScanner = 0; QueensIndexScanner < queensPlacedDown; QueensIndexScanner++)
             {
                 //Check the queen vertically, diagonally to the left and diagonally to the right
-                if((TestVertical(queensCoordinate[QueensIndexScanner],possibleColumn)) || (TestDiagonalLeft(queensCoordinate[QueensIndexScanner],QueensIndexScanner,possibleColumn,possibleRow)) || (TestDiagonalRight(queensCoordinate[QueensIndexScanner],QueensIndexScanner,possibleColumn,possibleRow)))
+
+                if((TestVertical(queensCoordinate[QueensIndexScanner],possibleColumn)) ||
+                   (TestDiagonalLeft(queensCoordinate[QueensIndexScanner],QueensIndexScanner,possibleColumn,possibleRow)) ||
+                   (TestDiagonalRight(queensCoordinate[QueensIndexScanner],QueensIndexScanner,possibleColumn,possibleRow)))
+
+
+                //if(TestQueen((queensCoordinate[QueensIndexScanner]),(QueensIndexScanner),(possibleColumn),(possibleRow)))
                 {
                     //Current location is invalid
                     PushSequence(boardSize, &possibleColumn, &possibleRow);
