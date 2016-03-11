@@ -94,11 +94,11 @@ int main()
 {
 
     int boardSize = 8;
-    /* WORK IN PROGRESS
+    ///* WORK IN PROGRESS
         //Asks the user for a board size and saves that variable inside int boardSize.
         cout << "Please give me a size for the board: ";
         scanf("%d", &boardSize);
-    */
+    //*/
 
     #ifdef DEBUG
         cout << "The program is running in debug mode.\n";
@@ -151,14 +151,14 @@ int main()
 *       Moves of the coordinates of the queen the program is about to remove to the
 *       possibleColumn and possibleRow variables and then removes the queen from the array.
 */
-static bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow, int* queensPlacedDown)
+static bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possibleRow, int* queensPlacedDown, int boardSize)
 {
 
     (*possibleRow) = ((*queensPlacedDown)-1);
 
     (*possibleColumn) = queensCoordinate[((*queensPlacedDown)-1)];
 
-    if((*possibleRow) == 0 && (*possibleColumn) == 7)
+    if((*possibleRow) == 0 && (*possibleColumn) == (boardSize-1))
     {
         return true;
     }
@@ -299,10 +299,10 @@ static int EightQueensPuzzle(int boardSize)
         //Array stack that keeps track of the coordinates of the queens
 
 
-        int queensCoordinate[8]; ///Note that the array for the queens is static but in the future look into changing this into malloc
+        //int queensCoordinate[8]; ///Note that the array for the queens is static but in the future look into changing this into malloc
 
         ///Code for later
-        //int* queensCoordinate = (int*) malloc (sizeof(int)*2*boardSize);
+        int* queensCoordinate = (int*) malloc (sizeof(int)*2*boardSize);
 
 
         //Number of successful possibilities of the queens being placed on the board.
@@ -355,7 +355,7 @@ static int EightQueensPuzzle(int boardSize)
             queensCoordinate[queensPlacedDown] = possibleColumn;
             queensPlacedDown++;
 
-            possibleColumn = 7;
+            possibleColumn = boardSize-1;
             PushSequence(boardSize, &possibleColumn, &possibleRow);
 
             //Register Queen and the remove the latest queen placed down and keep on searching
@@ -372,14 +372,14 @@ static int EightQueensPuzzle(int boardSize)
 #endif
 
                 //Remove Queen
-                everythingScanned = RemoveQueen(queensCoordinate, &possibleColumn, &possibleRow, &queensPlacedDown);
+                everythingScanned = RemoveQueen(queensCoordinate, &possibleColumn, &possibleRow, &queensPlacedDown, boardSize);
                 PushSequence(boardSize, &possibleColumn, &possibleRow);
             }
         }
         //If it isn't then scrap the latest queen that was inserted to the array.
         else
         {
-            everythingScanned = RemoveQueen(queensCoordinate, &possibleColumn, &possibleRow, &queensPlacedDown);
+            everythingScanned = RemoveQueen(queensCoordinate, &possibleColumn, &possibleRow, &queensPlacedDown, boardSize);
             PushSequence(boardSize, &possibleColumn, &possibleRow);
         }
     }
