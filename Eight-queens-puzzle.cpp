@@ -173,7 +173,6 @@ static bool RemoveQueen(int queensCoordinate[],  int* possibleColumn, int* possi
 
 
 #ifdef DEBUG
-
 // DEBUG
 ///Function Notes
 /*/////////////////////////////////////////////////////////////////////
@@ -329,7 +328,7 @@ static int EightQueensPuzzle(int boardSize)
             {
                 //Check the queen vertically, diagonally to the left and diagonally to the right
 
-                if((TestQueen   (QueensIndexScanner,queensCoordinate[QueensIndexScanner],possibleRow,possibleColumn)))
+                if((TestQueen(QueensIndexScanner,queensCoordinate[QueensIndexScanner],possibleRow,possibleColumn)))
 
 
                 //if(TestQueen((queensCoordinate[QueensIndexScanner]),(QueensIndexScanner),(possibleColumn),(possibleRow)))
